@@ -24,16 +24,26 @@ english_lang_select.click()
 
 cookie = driver.find_element(By.ID, "bigCookie")
 
-
-click_timeout = 5   # [seconds]
+click_timeout = 5  # [seconds]
 game_timeout = 300
 
 timeout_start = time.time()
 
-while time.time() < timeout_start + game_timeout:
-    while time.time() < timeout_start + click_timeout:
-        cookie.click()
-    cookie_number_tag = driver.find_element(By.ID, "cookies")
-    cookie_number = int(cookie_number_tag.text.split(" ")[0])
-
+while True:
+    cookie.click()
+    if time.time() > click_timeout:
+        clickable = driver.find_elements(By.CSS_SELECTOR, ".enabled")
+        prices = driver.find_elements(By.CSS_SELECTOR, ".enabled .content .price")
+        price_list = [int(price.text.replace(",", "")) for price in prices]
+        money_count = driver.find_element(By.ID, "cookies").text.strip().split()[0]
+        if "," in money_count:
+            money_count.replace(",", "")
+        cookie_count = int(money_count)
+        for price in prices:
+            if cookie_count > int(price.text) == max(price_list):
+                clickable[prices.index(price)].click()
+                click_timeout += 5
+    elif time.time > game_timeout:
+        print("done")
+        break
 
